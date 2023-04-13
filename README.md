@@ -1,5 +1,5 @@
 <div align="center">
-![logo](readme_src/filmotekalogo.png)
+<img src="../readme_src/filmotekalogo.png">
 
 &nbsp;
 
