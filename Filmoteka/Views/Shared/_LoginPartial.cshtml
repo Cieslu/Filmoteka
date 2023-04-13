@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Identity
+@*@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager*@
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <button class="nav-link text-white" style="background-color: #212529;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" aria-controls="offcanvasWithBackdrop">Witaj @UserManager.GetUserAsync(User).Result.NickName!</button>
+    </li>
+    <li class="nav-item text-white">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-white">Wyloguj się</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-white" id="register" asp-area="Identity" asp-page="/Account/Register">Rejestracja</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" id="login" asp-area="Identity" asp-page="/Account/Login">Logowanie</a>
+    </li>
+}
+</ul>

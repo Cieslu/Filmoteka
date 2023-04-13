@@ -1,0 +1,359 @@
+@using Filmoteka.Models.ViewModels
+@model EpisodeVievModel
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+<script>
+    function getTextRate(nazwa) {
+        document.getElementById("RateText").innerHTML = nazwa;
+    }
+    function clearTextRate() {
+        document.getElementById("RateText").innerHTML = "&nbsp";
+    }
+</script>
+}
+<section>
+    <div class="row p-5 mt-5 text-white " style="background-color: #0d0d0d;">
+        <div class="text-center mb-3">
+            <h1>@Model.Episode.Title (@Model.Episode.Date.ToString("dd/MM/yyyy"))</h1>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="col-12">
+                <h5 class="fw-bold">Ocena naszych użytkowników </h5>
+                @if (Model.AvgCount > 0)
+                {
+                    <span class="d-block mt-1"><i style="color: goldenrod;" class="bi bi-star-fill"></i> @string.Format("{0:N1}", Model.Avg) (z @Model.AvgCount ocen)</span>
+                }
+                else
+                {
+                    <span class="d-block mt-1">Brak ocen</span>
+                }
+            </div>
+            <div class="col-12">
+                @if (TempData["Rate"] == null)
+                {
+                    <h5 class="fw-bold mt-3">Oceń odcinek</h5>
+                    <form method="post">
+                        <div class="rate">
+                            <input type="radio" id="star5" asp-for="Rate" value="5" />
+                            <label onmouseout="clearTextRate()" onmouseover="getTextRate('Arcydzieło')" for="star5">5 stars</label>
+                            <input type="radio" id="star4" asp-for="Rate" value="4" />
+                            <label onmouseout="clearTextRate()" onmouseover="getTextRate('Dobry')" for="star4">4 stars</label>
+                            <input type="radio" id="star3" asp-for="Rate" value="3" />
+                            <label onmouseout="clearTextRate()" onmouseover="getTextRate('Średni')" for="star3">3 stars</label>
+                            <input type="radio" id="star2" asp-for="Rate" value="2" />
+                            <label onmouseout="clearTextRate()" onmouseover="getTextRate('Ujdzie')" for="star2">2 stars</label>
+                            <input type="radio" id="star1" asp-for="Rate" value="1" />
+                            <label onmouseout="clearTextRate()" onmouseover="getTextRate('Nieporozumienie')" for="star1">1 stars</label>
+                        </div>
+                        @if (User.Identity.IsAuthenticated && TempData["Rate"] == null)
+                        {
+                            <button type="submit" class="btn btn-sm mt-2" style="background-color: goldenrod" asp-action="AddEpisodeRate" asp-route-id="@Model.Episode.Id">Oceń odcinek</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-sm mt-2" style="background-color: goldenrod" disabled asp-action="AddEpisodeRate" asp-route-id="@Model.Episode.Id">Oceń odcinek</button>
+                        }
+                        <h3 id="RateText" style="color:goldenrod;" class="my-2">&nbsp</h3>
+                    </form>
+                }
+                else
+                {
+                    <h5 class="text-white mt-3">Twoja ocena</h5>
+                    <p>
+                        @for (int i = 0; i < Convert.ToInt32(TempData["Rate"]); i++)
+                        {
+                            <i style="color: goldenrod;" class="bi bi-star-fill"></i>
+                        }
+                        (@TempData["Rate"]/5)
+                        @if (Convert.ToInt32(TempData["rate"]) == 1)
+                        {
+                            <span>- Nieporozumienie</span>
+                        }
+                        @if (Convert.ToInt32(TempData["rate"]) == 2)
+                        {
+                            <span>- Ujdzie</span>
+                        }
+                        @if (Convert.ToInt32(TempData["rate"]) == 3)
+                        {
+                            <span>- Średni</span>
+                        }
+                        @if (Convert.ToInt32(TempData["rate"]) == 4)
+                        {
+                            <span>- Dobry</span>
+                        }
+                        @if (Convert.ToInt32(TempData["rate"]) == 5)
+                        {
+                            <span>- Arcydzieło</span>
+                        }
+                    </p>
+                }
+                <p class="card-text fs-5 mt-5 mb-5">@Model.Episode.Description</p>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <img src="@Model.Episode.Photo" class="card-img" alt="...">
+        </div>
+         @if (User.Identity.IsAuthenticated)
+        {
+            <div class="accordion mt-5" style="color: darkgoldenrod" id="accordionExample">
+                <button class="btn btn-sm btn-dark mb-2" data-bs-toggle="modal" data-bs-target="#linkModal">Dodaj link</button>
+                @if (Model.Links.Count > 0)
+                {
+                    foreach (var link in Model.Links)
+                    {
+                        <div class="accordion-item" style="border-color: goldenrod; background-color: darkgoldenrod !important;">
+                            <h2 class="accordion-header" id="heading-@link.Id" style="color: darkgoldenrod;">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@link.Id" aria-expanded="true" aria-controls="collapse-@link.Id" style="background-color: darkgoldenrod; color: white;">
+                                    @link.Name (Jakość: @link.Quality) dodane przez: @link.Username
+                                </button>
+                            </h2>
+                            <div id="collapse-@link.Id" class="accordion-collapse collapse " aria-labelledby="heading-@link.Id" data-bs-parent="#accordionExample">
+                                <div class="accordion-body col-12 d-flex justify-content-center align-items-center p-0" style="background-color: #0d0d0d;">
+                                    <iframe sandboxscrolling="no" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" sandbox="allow-scripts" src="@link.URL" onload="this.width=screen.width;this.height=screen.height;" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                } else {
+                    <h5 class="alert alert-primary">Nie dodano jeszcze żadnego linka do tego filmu.</h5>
+                }
+            </div>
+        }
+        <div class="mt-5">
+            <div class="d-flex justify-content-center">
+                <a class="btn btn-dark" asp-controller="Series" asp-action="SesonDetails" asp-route-id="@TempData["SesonId"]">Wróć do listy odcinków</a>
+            </div>
+        </div>
+        <div class="col-12 mt-5">
+            <div class="row border-bottom pb-3">
+                <div class="col-12 d-sm-none mb-5 d-flex justify-content-center">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">Dodaj komentarz</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled>Dodaj komentarz</button>
+                    }
+                </div>
+                <div class="col-12 d-flex justify-content-center d-sm-block col-sm-6">
+                    <h3>Komentarze: @Model.Comments.Count()</h3>
+                </div>
+                <div class="col-12 d-none d-sm-flex col-sm-6 justify-content-end">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">Dodaj komentarz</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled>Dodaj komentarz</button>
+                    }
+                </div>
+            </div>
+
+            @if (Model.Comments.Count() == 0)
+            {
+                <div class="mt-5 d-flex justify-content-center" style="background-color: #0d0d0d;">
+                    <h5>Nie dodano jeszcze żadnych komentarzy!</h5>
+                </div>
+            }
+
+            <div class="mt-3">
+                <ul class="list-unstyled">
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <li class="p-3 border-bottom">
+                            <div class="d-flex row justify-content-center align-items-start">
+                                <div class="col-6">
+                                    <p class="fw-bold mb-0" style="color: darkgoldenrod;">@comment.Name</p>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <p class="text-muted">@comment.DateTime.ToShortDateString()</p>
+                                </div>
+                                <div class="col-1 text-center">
+                                    <i class="bi bi-person-circle fs-3"></i>
+                                </div>
+                                <div class="col-11 mt-2">
+                                    <p class="text-start">@comment.Description</p>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background-color: #0d0d0d!important; border-color: goldenrod!important;">
+            <div class="modal-header text-white">
+                <h3 class="modal-title" id="exampleModalLabel">Dodaj komentarz</h3>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="p-5 text-white">
+                    <form method="post">
+                        <div class="mt-3">
+                            <div class="form-floating mb-3">
+                                <textarea asp-for="Comment.Description" placeholder="komentarz..." class="form-control"></textarea>
+                                <label class="form-label" asp-for="Comment.Description"></label>
+                                <span asp-validation-for="Comment.Description" class="text-danger"></span>
+                            </div>
+                            <div class="d-flex justify-content-center mt-5">
+                                <button type="submit" asp-controller="Series" asp-action="CreateCommentEpisode" asp-route-id="@Model.Episode.Id" class="btn btn-dark btn-size btn-font me-1">Dodaj</button>
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Zamknij</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="linkModal" tabindex="-1" aria-labelledby="linkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background-color: #0d0d0d!important; border-color: goldenrod!important;">
+            <div class="modal-header text-white">
+                <h3 class="modal-title" id="linkModalLabel">Nowy link - @Model.Episode.Title</h3>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="p-5 text-white">
+                    <form method="post">
+                        <div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Link.Name" placeholder="komentarz..." class="form-control">
+                                <label class="form-label" asp-for="Link.Name"></label>
+                                <span asp-validation-for="Link.Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Link.URL" placeholder="komentarz..." class="form-control">
+                                <label class="form-label" asp-for="Link.URL"></label>
+                                <span asp-validation-for="Link.URL" class="text-danger"></span>
+                                <small class="text-muted"><i class="bi bi-info-circle mx-1"></i> Akceptowalne hostingi plików, to: vidoza.net i upstream.to</small>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <select asp-for="Link.Quality" placeholder="opcja..." class="form-control">
+                                    <option value="320p">360p</option>
+                                    <option value="480p">480p</option>
+                                    <option value="720p">720p</option>
+                                    <option value="1080p">1080p</option>
+                                </select>
+                                <label class="form-label" asp-for="Link.Quality"></label>
+                                <span asp-validation-for="Link.Quality" class="text-danger"></span>
+                            </div>
+                            <div class="d-flex justify-content-center mt-5">
+                                <button type="submit" asp-controller="Series" asp-action="AddLinkToMovie" asp-route-id="@Model.Episode.Id" class="btn btn-dark btn-size btn-font me-1">Dodaj</button>
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Zamknij</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*    <div class="modal fade" id="linkModal" tabindex="-1" aria-labelledby="linkModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="background-color: #0d0d0d!important; border-color: goldenrod!important;">
+                <div class="modal-header text-white">
+                    <h3 class="modal-title" id="linkModalLabel">Nowy link - @Model.Episode.Title</h3>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="background-color: #0d0d0d!important; border-color: goldenrod!important;">
+                <div class="modal-header text-white">
+                    <h3 class="modal-title" id="exampleModalLabel">Dodaj komentarz</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="p-5 text-white">
+                        <form method="post">
+                            <div>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Link.Name" placeholder="komentarz..." class="form-control">
+                                    <label class="form-label" asp-for="Link.Name"></label>
+                                    <span asp-validation-for="Link.Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Link.URL" placeholder="komentarz..." class="form-control">
+                                    <label class="form-label" asp-for="Link.URL"></label>
+                                    <small class="text-muted d-block"><i class="bi bi-info-circle mx-1"></i> Akceptowalne hostingi plików, to: vidoza.net i upstream.to</small>
+                                    <span asp-validation-for="Link.URL" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <select asp-for="Link.Quality" placeholder="opcja..." class="form-control">
+                                        <option value="720">360p</option>
+                                        <option value="720">480p</option>
+                                        <option value="720">720p</option>
+                                        <option value="1080">1080p</option>
+                                    </select>
+                                    <label class="form-label" asp-for="Link.Quality"></label>
+                                    <span asp-validation-for="Link.Quality" class="text-danger"></span>
+                                </div>
+                                <div class="d-flex justify-content-center mt-5">
+                                    <button type="submit" asp-controller="Series" asp-action="AddLinkToMovie" asp-route-id="@Model.Episode.Id" class="btn btn-dark btn-size btn-font me-1">Dodaj</button>
+
+                            <div class="mt-3">
+                                <div class="form-floating mb-3">
+                                    <textarea asp-for="Comment.Description" placeholder="komentarz..." class="form-control"></textarea>
+                                    <label class="form-label" asp-for="Comment.Description"></label>
+                                    <span asp-validation-for="Comment.Description" class="text-danger"></span>
+                                </div>
+                                <div class="d-flex justify-content-center mt-5">
+                                    <button type="submit" asp-controller="Series" asp-action="CreateCommentEpisode" asp-route-id="@Model.Episode.Id" class="btn btn-dark btn-size btn-font me-1">Dodaj</button>
+                                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Zamknij</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+

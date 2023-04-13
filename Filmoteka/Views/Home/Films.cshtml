@@ -1,0 +1,124 @@
+﻿@using Filmoteka.Models.ViewModels
+@model MyLibrary
+
+@{
+    ViewData["Title"] = "Filmy";
+}
+
+<style>
+    .card {
+        transition: 0.6s !important;
+    }
+
+        .card img {
+            transition: all 0.7s ease-in-out !important;
+        }
+
+    #imgDiv {
+        overflow: hidden !important;
+    }
+
+    .card:hover {
+        box-shadow: 0 0 1rem cornflowerblue;
+    }
+
+        .card:hover img {
+            transform: scale(1.2);
+        }
+</style>
+
+<section>
+    <header class="mt-5 border border-1" style="border-color: goldenrod !important;">
+        <div class="text-center text-white p-5 opacity-element" style="background-color: #0d0d0d;">
+            <h1>Filmy @ViewBag.genre</h1>
+            <form asp-action="SearchMovie">
+                <div class="input-group mt-3">
+                    <input asp-for="movieSearch" type="text" class="form-control" aria-label="Text input with segmented dropdown button">
+                    <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
+                    <button id="GenreButton" type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span>Gatunki</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end ul-genre">
+                        @foreach (var element in ViewBag.GenreId)
+                        {
+                            <li><a class="dropdown-item text-white g-hover" asp-action="GenreSearchMovie" asp-route-id="@element.Id">@element.Name</a></li>
+                        }
+                    </ul>
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span><i style="color: goldenrod;" class="bi bi-star-fill me-2"></i>Oceny</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end ul-genre">
+                        <li><a class="dropdown-item text-white g-hover" asp-action="SortByBest">Od najlepszych <i class="bi bi-sort-up"></i></a></li>
+                        <li><a class="dropdown-item text-white g-hover" asp-action="SortByWorst">Od najgorszych <i class="bi bi-sort-down-alt"></i></a></li>
+                    </ul>
+                </div>
+            </form>
+            <a class="btn btn-dark mt-5" style="width: 150px;" asp-controller="Movies" asp-action="Create">Dodaj film</a>
+        </div>
+    </header>
+
+    @if (Model.MovieList.Count() == 0 && ViewBag.check == false)
+    {
+        <div class="mt-5 p-5 d-flex justify-content-center opacity-element text-white" style="background-color: #0d0d0d; position: relative; z-index: -1000!important;">
+            <h1>Nie dodano jeszcze żadnych filmów z gatunku @ViewBag.genre2!</h1>
+        </div>
+    }
+    else if (Model.MovieList.Count() == 0)
+    {
+        <div class="mt-5 p-5 d-flex justify-content-center opacity-element text-white" style="background-color: #0d0d0d; position: relative; z-index: -1000!important;">
+            <h1>Nie dodano jeszcze żadnych filmów!</h1>
+        </div>
+    }
+
+    <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-4 mt-2 ">
+        @foreach (var element in Model.MovieList)
+        {
+            <div id="test" class="col pierogi">
+                <a class="text-decoration-none text-white" asp-controller="Movies" asp-action="Details" asp-route-id="@element.Id">
+                    <div class="card h-100 opacity-element a-hover" style="position:relative; background-color: #0d0d0d;">
+                        <div id="imgDiv">
+                            <img src="@element.Photo" class="img-responsive img-responsive-zxl card-img-top rounded" alt="..." height="360">
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text mb-0">@element.Title</p>
+                            @if (element.AvgCount > 0)
+                            {
+                                <span><i style="color: goldenrod;" class="bi bi-star-fill"></i> @string.Format("{0:N1}", element.Avg)</span>
+                            }
+                            else
+                            {
+                                <span><i style="color: goldenrod;" class="bi bi-star-fill"></i> Brak oceny</span>
+                            }
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        }
+    </div>
+</section>
+
+
+@section Scripts {
+<script>
+    document.getElementById("GenreButton").addEventListener('click', () => {
+        let a = document.querySelectorAll('.pierogi');
+        a.forEach(e => {
+            e.classList.add('my-z-index');
+        });
+
+    });
+
+    document.getElementById("GenreButton").addEventListener('blur', () => {
+        let a = document.querySelectorAll('.pierogi');
+        a.forEach(e => {
+            setTimeout(() => {
+                e.classList.remove('my-z-index');
+
+            }, 500)
+        });
+    })
+</script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+

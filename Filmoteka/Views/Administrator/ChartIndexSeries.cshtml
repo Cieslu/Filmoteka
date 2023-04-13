@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Wykres I";
+}
+
+<section class="pt-3 pb-3" style="background-color: #0d0d0d;">
+    <div class="mb-5 text-center row">
+        <div class="col-12">
+            <h2 class="text-center text-white">Wykres dodanych seriali (@ViewBag.Movies)</h2>
+        </div>
+    </div>
+
+    <div class="chartDiv">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="form-check form-switch d-flex justify-content-center mt-5">
+        <input class="form-check-input" id="btnLine" type="checkbox" style="background-color: cornflowerblue !important;">
+        <label class="form-check-label text-white ms-2" for="btnLine">Przełącz na wykres liniowy</label>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+
+        const moviesCount = @Html.Raw(Json.Serialize(ViewBag.MoviesCount));
+        const months = @Html.Raw(Json.Serialize(ViewBag.MonthsString));
+
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Dodane filmy',
+                    data: moviesCount,
+                    backgroundColor: 'rgba(255,99,132,0.2)',
+                    borderColor: 'rgb(255,99,132)',
+                    borderWidth: 2,
+                    hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                    hoverBorderColor: 'rgb(255,99,132)',
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            color: "white",
+                        },
+                        grid: {
+                            display: true,
+                        },
+                    },
+                    x: {
+                        ticks: {
+                            color: "white",
+                        },
+                        grid: {
+                            display: false,
+                        },
+                    }
+                },
+                 plugins: {
+                    legend: {
+                        labels: {
+                            color: "white",
+                        },
+                    },
+                },
+                responsive: true,
+                onHover: (e) => {
+
+                    const points = myChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+
+                    if(points.length > 0){
+                        document.body.style.cursor = "pointer";
+                    }
+                    else{
+                        document.body.style.cursor = "default";
+                    }
+                },
+                onClick: (evt) => {
+
+                    const points = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+
+                    if (points.length) {
+                        const firstPoint = points[0];
+                        var label = myChart.data.labels[firstPoint.index];
+                        var value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+                        window.location = "/Administrator/ChartDetailsSeries/" + label;
+                    }
+                }
+            }
+        });
+
+        const toggle = document.getElementById("btnLine");
+
+        const Line = function(){
+
+            if(myChart.config.type === 'bar'){
+
+                myChart.config.type = 'line';
+            }
+            else{
+                myChart.config.type = 'bar';
+            }
+
+            myChart.update();
+        }
+
+        toggle.addEventListener('click', Line)
+    </script>
+</section>
+
+

@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Wykres III";
+}
+<section class="pt-3 pb-3" style="background-color: #0d0d0d;">
+    <div class="mb-5 text-center text-white row">
+        <div class="col-12">
+            <h2>Wykres ilości ocen (@ViewBag.RaitingCount) z gatunku (@ViewBag.Genre) w miesiącu (@ViewBag.monthString)</h2>
+        </div>
+    </div>
+
+    <div class="chartDiv">
+        <canvas id="myChart"></canvas>
+    </div>
+</section>
+
+<script>
+    const ctx = document.getElementById('myChart');
+
+    const ratings = @Html.Raw(@Json.Serialize(ViewBag.Raitings));
+    const ratingQuantity = @Html.Raw(Json.Serialize(ViewBag.RaitingLabel));
+    let hoverDataX = 0;
+
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ratings,
+            datasets: [{
+                label: 'Oceny',
+                data: ratingQuantity,
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 3,
+                tension: 0.2,
+                fill: true,
+                backgroundColor : 'rgba(255, 99, 132, 0.1)'
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: 'rgb(255,255,255)'
+                    },
+                    grid: {
+                        display: true,
+                        color: 'rgba(255,99,132,0.2)'
+                    },
+                },
+                x: {
+                    ticks: {
+                        color: 'rgb(255,255,255)'
+                    },
+                    grid: {
+                        display: true,
+                        color: 'rgba(255,99,132,0.2)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgb(255,255,255)'
+                    },
+                },
+            },
+            animations: {
+                radius: {
+                    duration: 400,
+                    easing: 'linear',
+                    loop: (context) => context.active
+                },
+            },
+            hoverRadius: 12,
+            hoverBackgroundColor: 'yellow',
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'x'
+            },
+        },
+    });
+</script>
+

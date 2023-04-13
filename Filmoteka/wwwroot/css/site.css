@@ -1,0 +1,223 @@
+﻿html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    margin-bottom: 60px;
+    background-image: url(../films2.jpg);
+    background-attachment: fixed;
+    font-family: 'Lato', sans-serif;
+}
+
+input {
+    background-color: #2B2B2B !important;
+    color: #DDDDDD !important;
+}
+
+select {
+    background-color: #2B2B2B !important;
+    color: #DDDDDD !important;
+}
+
+textarea {
+    background-color: #2B2B2B !important;
+    color: #DDDDDD !important;
+}
+
+.my-z-index {
+    z-index: -1 !important;
+}
+
+.ul-genre {
+    background-color: #2B2B2B !important;
+}
+
+.opacity-element {
+    opacity: 0.90;
+}
+
+.header-mb {
+    margin-bottom: 150px;
+}
+
+.a-hover:hover {
+    opacity: 1;
+}
+
+.g-hover:hover {
+    background-color: black !important;
+}
+
+/*.a-hover {
+    transition: all 0.2s ease-in-out;
+}
+
+.a-hover:hover {
+    transform: scale(1.1);
+}*/
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+
+.marginTop {
+    margin-top: 130px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    background: #0d0d0d;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.rate {
+    float: left;
+    height: 26px;
+}
+
+    .rate:not(:checked) > input {
+        position: absolute;
+        top: -9999px;
+    }
+
+    .rate:not(:checked) > label {
+        float: right;
+        width: 1em;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        font-size: 30px;
+        color: #ccc;
+    }
+
+        .rate:not(:checked) > label:before {
+            content: '★ ';
+        }
+
+    .rate > input:checked ~ label {
+        color: #ffc700;
+    }
+
+    .rate:not(:checked) > label:hover,
+    .rate:not(:checked) > label:hover ~ label {
+        color: #deb217;
+    }
+
+    .rate > input:checked + label:hover,
+    .rate > input:checked + label:hover ~ label,
+    .rate > input:checked ~ label:hover,
+    .rate > input:checked ~ label:hover ~ label,
+    .rate > label:hover ~ input:checked ~ label {
+        color: #c59b08;
+    }
+
+.star {
+    height: 70px;
+    width: 70px;
+    -webkit-clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    text-align: center;
+    background: goldenrod;
+    color: white;
+}
+
+.star::before {
+    display: inline-block;
+    height: 100%;
+    background: blue;
+    vertical-align: middle;
+    content: '';
+}
+
+.buttons{
+    display: none !important;
+}
+
+.img-confirm{
+    width: 0;
+    height: 0;
+    transition: all 0.5s ease-out;
+}
+
+.img-confirm-hover:hover .img-confirm, .buttons{
+    width: 186px;
+    height: 255px;
+}
+
+.img-confirm-hover:hover .buttons{
+    display: block !important;
+}
+
+.chartDiv {
+    margin-top: 100px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50vh;
+    width: 50vw;
+}
+
+canvas {
+    background-color: #212529;
+    border: 1px dotted black;
+}
+
+
+
+    @media (max-width: 575px) {
+        .img-sm {
+        height: auto;
+        width: 100%;
+    }
+
+    .a-hover:hover {
+        transition: none;
+        transform: none;
+    }
+
+    .btn-size {
+        width: 70px;
+    }
+
+    .btn-font {
+        font-size: 14px;
+    }
+
+    iframe {
+        height: 215px;
+        width: 100%;
+    }
+
+    .p-sm {
+        font-size: 16px !important;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+    .img-md {
+        height: 310px;
+        width: 100%;
+    }
+
+    iframe {
+        height: 230px;
+        width: 100%;
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1400px) {
+    .img-responsive-xxl {
+        height: 245px;
+    }
+}
+
+.img-responsive {
+    height: 255px;
+}
+

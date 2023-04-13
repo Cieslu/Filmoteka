@@ -1,0 +1,26 @@
+﻿@page
+@model ResendEmailConfirmationModel
+@{
+    ViewData["Title"] = "Wyślij ponownie e-mail potwierdzający";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 p-5 mt-5 border border-1 text-white" style="background-color: #0d0d0d; border-color: goldenrod!important;">
+    <h3 class="text-center">@ViewData["Title"]</h3>
+        <section>
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-floating my-3">
+                    <input asp-for="Input.Email" class="form-control" placeholder="Email" autocomplete="username" aria-required="true" style="background-color: #2B2B2B!important; color: #DDDDDD;"/>
+                    <label asp-for="Input.Email" class="form-label" ></label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <button type="submit" class="w-100 btn btn-lg btn-dark">Wyślij ponownie</button>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

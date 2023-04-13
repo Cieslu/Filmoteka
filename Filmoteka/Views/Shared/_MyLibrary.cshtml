@@ -1,0 +1,39 @@
+﻿@if (this.User.Identity.IsAuthenticated)
+{
+    <div class="offcanvas offcanvas-start text-white" style="background-color: #212529;" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
+        <div class="offcanvas-header">
+            <h3 class="offcanvas-title" id="offcanvasWithBackdropLabel">Moja biblioteka</h3>
+            <button type="button" class="btn-close btn-close-white text-reset"  data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <h5>Moje filmy</h5>
+            <hr>
+            @if (Model.MoviesML.Count == 0)
+            {
+                <p>Brak dodanych filmów</p>
+            }
+            else
+            {
+                @foreach (var element in Model.MoviesML)
+                {
+                    <p><a class="text-decoration-none" style="color: goldenrod;" asp-controller="Movies" asp-action="Details" asp-route-id="@element.Id">@element.Title</a> <span class="text-muted">@element.DateTime.ToString("dd/MM/yyyy")</span></p>
+                }
+            }
+
+            <h5 class="mt-5">Moje seriale</h5>
+            <hr>
+            @if (Model.SeriesML.Count == 0)
+            {
+                <p>Brak dodanych seriali</p>
+            }
+            else
+            {
+                @foreach (var element in Model.SeriesML)
+                {
+                    <p><a class="text-decoration-none" style="color: goldenrod;" asp-controller="Series" asp-action="Details" asp-route-id="@element.Id">@element.Title</a> <span class="text-muted">@element.DateTime.ToString("dd/MM/yyyy")</span></p>
+                }
+            }
+        </div>
+    </div>
+}
+

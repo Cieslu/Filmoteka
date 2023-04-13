@@ -1,0 +1,78 @@
+﻿@using Filmoteka.Models.ViewModels
+@model MyLibrary
+
+<section>
+    <div class="alert alert-dark alert-dismissible fade show" role="alert">
+        <strong style="color: cornflowerblue;">Filmy</strong> są oznaczone kolorem niebieskim.
+        <strong style="color: goldenrod;">Seriale</strong> są oznaczone kolorem złotym.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Plakat</th>
+                <th scope="col">Tytuł</th>
+                <th scope="col">Data dodania</th>
+                <th scope="col">Naza użytkownika</th>
+                <th scope="col">Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 0;
+                foreach (var element in Model.MovieList)
+                {
+                    i++;
+                    <tr class="img-confirm-hover" style="color: cornflowerblue;">
+                        <th scope="row">@i</th>
+                        <td><img class="img-confirm" src="@element.Photo" alt="" height=255></td>
+                        <td>@element.Title</td>
+                        <td>@element.DateTime.ToString("dd/MM/yyyy")</td>
+                        <td>@element.NickName</td>
+                        @if (ViewBag.Cancel == true)
+                        {
+                            <td>
+                                <a class="btn btn-danger" asp-controller="Administrator" asp-action="CancelMovie" asp-route-id="@element.Id"><i class="bi bi-x-circle"></i></a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a class="btn btn-success" asp-controller="Administrator" asp-action="IsConfirmMovie" asp-route-id="@element.Id"><i class="bi bi-check-circle"></i></a>
+                                <a class="btn btn-primary" asp-controller="Movies" asp-action="Details" asp-route-id="@element.Id"><i class="bi bi-search"></i></a>
+                                <a class="btn btn-danger" asp-controller="Administrator" asp-action="DeleteMovie" asp-route-id="@element.Id"><i class="bi bi-trash3"></i></a>
+                            </td>
+                        }
+                    </tr>
+                }
+                foreach (var element in Model.SeriesList)
+                {
+                    i++;
+                    <tr class="img-confirm-hover" style="color: goldenrod;">
+                        <th scope="row">@i</th>
+                        <td><img class="img-confirm" src="@element.Photo" alt="" height=255></td>
+                        <td>@element.Title</td>
+                        <td>@element.DateTime.ToString("dd/MM/yyyy")</td>
+                        <td>@element.NickName</td>
+                        @if (ViewBag.Cancel == true)
+                        {
+                            <td>
+                                <a class="btn btn-danger" asp-controller="Administrator" asp-action="CancelSeries" asp-route-id="@element.Id"><i class="bi bi-x-circle"></i></a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <a class="btn btn-success" asp-controller="Administrator" asp-action="IsConfirmSeries" asp-route-id="@element.Id"><i class="bi bi-check-circle"></i></a>
+                                <a class="btn btn-primary" asp-controller="Series" asp-action="Details" asp-route-id="@element.Id"><i class="bi bi-search"></i></a>
+                                <a class="btn btn-danger" asp-controller="Administrator" asp-action="DeleteSeries" asp-route-id="@element.Id"><i class="bi bi-trash3"></i></a>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>
+

@@ -1,0 +1,162 @@
+﻿@using Filmoteka.Models.ViewModels
+@model EpisodeVievModel
+
+@section Scripts {
+<script>
+
+    document.body.querySelector('.container').classList.remove('container');
+    document.body.querySelector('.navbar').classList.remove('mb-3');
+    document.body.querySelector('.pb-3').classList.remove('pb-3');
+    document.body.querySelector('main').classList.remove('marginTop');
+    document.body.style.backgroundImage = 'none';
+    document.body.style.backgroundColor = '#0d0d0d';
+</script>
+}
+
+
+<style>
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%;
+    }
+
+    .video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+</style>
+
+
+<div class="d-none d-xxl-flex video-container overflow-hidden">
+    <iframe class="video" src=@ViewBag.video allowfullscreen frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; loop; picture-in-picture"></iframe>
+
+    <section>
+        @if (Model.EpisodeList.Count() == 0)
+        {
+            <div style="position: absolute; top:25%; left:0.5%; background-color: #0d0d0d;" class="col-12 text-white p-5 d-flex justify-content-center opacity-element row text-center">
+                <div class="col-12"><h1 class="text-white">Nie dodano jeszcze żadnego odcinka do tego sezonu!</h1></div>
+            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a style="cursor: pointer;" asp-controller="Series" asp-action="CreateEpisode" asp-route-id="@TempData["id"]"><i class="bi bi-plus-circle" style="position: fixed; bottom: 7%; right: 3%; z-index: 1; font-size: 500%; color: goldenrod;"></i></a>
+            }
+        }
+        else
+        {
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a style="cursor: pointer;" asp-controller="Series" asp-action="CreateEpisode" asp-route-id="@TempData["id"]"><i class="bi bi-plus-circle" style="position: fixed; bottom: 7%; right: 3%; z-index: 1; font-size: 500%; color: goldenrod;"></i></a>
+            }
+            <div class="row row-cols-3 g-4 px-5 overflow-auto" style="position: absolute; top:20%; left:1.1%; width: 99vw; max-height: 1000px;">
+                @{
+                    int i = 0;
+                    foreach (var element in Model.EpisodeList)
+                    {
+                        i++;
+
+                        <div class="d-flex justify-content-center">
+                            <div class="card mb-3 opacity-element a-hover" style="background-color: #0d0d0d; width: 560px; height: 170px;">
+                                <a class="text-black text-decoration-none" asp-controller="Series" asp-action="EpisodeDetails" asp-route-id="@element.Id">
+                                    <div class="row g-0">
+                                        <div class="col-md-5">
+                                            <img src="@element.Photo" class="img-fluid rounded-start;" style="width: 240px; height: 170px;" alt="episode poster">
+                                        </div>
+                                        <div class="col-md-7 text-white">
+                                            <div class="card-body">
+                                                <h4>Odcinek @i</h4>
+                                                <h5 class="card-title">@element.Title</h5>
+                                                @if (element.AvgCount > 0)
+                                                {
+                                                    <span style="color:goldenrod;" class="fw-bold me-4"><i style="color: goldenrod;" class="bi bi-star-fill"></i> <span class="ms-1">@string.Format("{0:N1}", element.Avg)</span></span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color:goldenrod;" class="fw-bold me-4"><i style="color: goldenrod;" class="bi bi-star-fill"></i><span class="ms-2">Brak ocen</span></span>
+                                                }
+                                                @if (element.CommentCount > 0)
+                                                {
+                                                    <span style="color: royalblue;" class="fw-bold"><i class="bi bi-chat-fill"> <span class="ms-1">@element.CommentCount</span> </i> </span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color: royalblue;" class="fw-bold"><i class="bi bi-chat-fill"><span class="ms-2">0</span></i> </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        }
+    </section>
+</div>
+
+<section class="d-xxl-none container marginTop">
+    @if (Model.EpisodeList.Count() == 0)
+    {
+        <div style="background-color: #0d0d0d;" class="text-white mt-5 p-5 d-flex justify-content-center opacity-element row text-center">
+            <div class="col-12"><h1 class="text-white">Nie dodano jeszcze żadnego odcinka do tego sezonu!</h1></div>
+        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a style="cursor: pointer;" asp-controller="Series" asp-action="CreateEpisode" asp-route-id="@TempData["id"]"><i class="bi bi-plus-circle" style="position: fixed; bottom: 7%; right: 3%; z-index: 1; font-size: 500%; color: goldenrod;"></i></a>
+        }
+    }
+    else
+    {
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div>
+                <a style="cursor: pointer;" asp-controller="Series" asp-action="CreateEpisode" asp-route-id="@TempData["id"]"><i class="bi bi-plus-circle" style="position: fixed; bottom: 7%; right: 3%; z-index: 1; font-size: 500%; color: goldenrod;"></i></a>
+            </div>
+        }
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @{
+                int i = 0;
+                foreach (var element in Model.EpisodeList)
+                {
+                    i++;
+
+                    <div class="card text-white align-items-center" style="background-color: #0d0d0d;">
+                        <img src="@element.Photo" class="img-fluid card-img-top" alt="episode poster" style="width: 383px; height: 287px;">
+                        <div class="card-body text-center">
+                            <a class="text-white text-decoration-none" asp-controller="Series" asp-action="EpisodeDetails" asp-route-id="@element.Id">
+                                <h4 class="text-center">Odcinek @i</h4>
+                                <h5 class="card-title">@element.Title</h5>
+                            </a>
+                            <div class="d-flex justify-content-center">
+                                @if (element.AvgCount > 0)
+                                {
+                                    <span style="color:goldenrod;" class="fw-bold me-4"><i style="color: goldenrod;" class="bi bi-star-fill"></i> <span class="ms-1">@string.Format("{0:N1}", element.Avg)</span></span>
+                                }
+                                else
+                                {
+                                    <span style="color:goldenrod;" class="fw-bold me-4"><i style="color: goldenrod;" class="bi bi-star-fill"></i><span class="ms-2">Brak ocen</span></span>
+                                }
+                                @if (element.CommentCount > 0)
+                                {
+                                    <span style="color: royalblue;" class="fw-bold"><i class="bi bi-chat-fill"> <span class="ms-1">@element.CommentCount</span> </i> </span>
+                                }
+                                else
+                                {
+                                    <span style="color: royalblue;" class="fw-bold"><i class="bi bi-chat-fill"><span class="ms-2">0</span></i> </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</section>
+

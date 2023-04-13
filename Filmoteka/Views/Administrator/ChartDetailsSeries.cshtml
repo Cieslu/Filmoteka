@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "Wykres II";
+}
+
+<section class="pt-3 pb-3" style="background-color: #0d0d0d;">
+    <div class="mb-5 text-center text-white row">
+        <div class="col-12">
+            <h2>Ilość gatunków seriali (@ViewBag.genreCount) w wybranym miesiącu (@ViewBag.Month)</h2>
+        </div>
+    </div>
+
+    <div class="chartDiv">
+        <canvas id="myChart" style="border: none;"></canvas>
+    </div>
+
+    <div class="form-check form-switch d-flex justify-content-center mt-5">
+        <input class="form-check-input" id="btnDoughnut" type="checkbox" style="background-color: cornflowerblue !important;">
+        <label class="form-check-label ms-2 text-white" for="btnDoughnut">Przełącz na wykres doughnut</label>
+    </div>
+
+    <script>
+    const ctx = document.getElementById('myChart');
+
+    const genre = @Html.Raw(Json.Serialize(ViewBag.GenresLabel));
+    const genreQuantity = @Html.Raw(Json.Serialize(ViewBag.GenresCount));
+
+    const myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: genre,
+            datasets: [{
+                label: 'Gatunki seriali',
+                data: genreQuantity,
+                backgroundColor: [
+                    'rgba(255,99,132,0.2)',
+                    'rgba(54, 162, 235,0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 0, 255,0.2)',
+                    'rgba(0, 102, 102, 0.2)',
+                    'rgba(0, 51, 0, 0.2)',
+                    'rgba(128, 0, 0, 0.2)',
+                    'rgba(0, 0, 102, 0.2)',
+                    'rgba(102, 51, 0, 0.2)',
+                    'rgba(153, 153, 102, 0.2)',
+                    'rgba(153, 0, 51, 0.2)',
+                    'rgba(102, 102, 153, 0.2)',
+                    'rgba(0, 153, 51, 0.2)',
+                    'rgba(255, 204, 102, 0.2)'
+                ],
+                borderColor: 'rgb(255,255,255)',
+                borderWidth: 1,
+                hoverBackgroundColor: [
+                    'rgba(255,99,132,0.4)',
+                    'rgba(54, 162, 235,0.4)',
+                    'rgba(255, 206, 86, 0.4)',
+                    'rgba(75, 192, 192, 0.4)',
+                    'rgba(153, 102, 255, 0.4)',
+                    'rgba(255, 159, 64, 0.4)',
+                    'rgba(255, 0, 255,0.4)',
+                    'rgba(0, 102, 102, 0.4)',
+                    'rgba(0, 51, 0. 0.4)',
+                    'rgba(128, 0, 0, 0.4)',
+                    'rgba(0, 0, 102, 0.4)',
+                    'rgba(102, 51, 0, 0.4)',
+                    'rgba(153, 153, 102, 0.4)',
+                    'rgba(153, 0, 51, 0.4)',
+                    'rgba(102, 102, 153, 0.4)',
+                    'rgba(0, 153, 51, 0.4)',
+                    'rgba(255, 204, 102, 0.2)'
+                ],
+                hoverBorderColor: 'rgba(255,99,132,1)',
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'rgb(255,255,255)'
+                    },
+                },
+            },
+            onHover: (e) => {
+
+                const points = myChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+
+                if(points.length > 0){
+                    document.body.style.cursor = "pointer";
+                }
+                else{
+                    document.body.style.cursor = "default";
+                }
+            },
+            onClick: (evt) => {
+
+                const points = myChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                
+                if (points.length) {
+                    const firstPoint = points[0];
+                    var label = myChart.data.labels[firstPoint.index];
+                    var value = myChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+                    window.location = "/Administrator/ChartRaitingSeries/" + label;
+                }
+            },
+        },
+    });
+
+    const toggle = document.getElementById("btnDoughnut");
+
+    const Doughnut = function(){
+
+        if (myChart.options.cutout) {
+            myChart.options.cutout = 0;
+        } 
+        else {
+            myChart.options.cutout = '50%';
+        }
+        myChart.update();
+    }
+
+    toggle.addEventListener('click', Doughnut)
+</script>
+</section>
+
+
+
+
