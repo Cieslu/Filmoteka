@@ -13,10 +13,6 @@
 
 &nbsp;
 
-### **Adres strony**
-http://filmotekaa-001-site1.atempurl.com/
-
-
 </div>
 
 
